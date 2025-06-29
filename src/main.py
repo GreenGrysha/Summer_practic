@@ -10,8 +10,9 @@ def main():
 
     def img_not_none(func):
         def wrapper(*args, **kwargs):
+            nonlocal current_image
             if current_image is None:
-                print("Не удалось загрузить изображение!")
+                print("Ошибка: Не удалось загрузить изображение!")
                 return None
             else:
                 return func(img, *args, **kwargs)
