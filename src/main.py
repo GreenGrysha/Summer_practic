@@ -1,22 +1,14 @@
+import sys
+
 from ImageOperations.ImageDownload import ImageDownload
-import cv2
-from QT.Qt import QtInterface
+from QT.QtMain import QtInterface
+from ImageOperations.Functions import *
+
 
 def main():
 
-    qt = QtInterface()
     img = ImageDownload(qt)
     current_image = None
-
-    def img_not_none(func):
-        def wrapper(*args, **kwargs):
-            nonlocal current_image
-            if current_image is None:
-                print("Ошибка: Не удалось загрузить изображение!")
-                return None
-            else:
-                return func(img, *args, **kwargs)
-        return wrapper
 
     def load_image():
         nonlocal current_image
@@ -28,6 +20,30 @@ def main():
         img.video()
         current_image = img.img
 
+    def show_operations():
+        if current_image is None:
+            qt.show_error("Сначала загрузите изображение!")
+            return
+        else:
+            while qt.operations_layout.count():
+                item = qt.operations_layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+
+            btn_crop = qt.add_button("Обрезать", lambda: crop(current_image, qt))
+            btn_rotate = qt.add_button("Повернуть", lambda: rotation(current_image, qt))
+            btn_rect = qt.add_button("Прямоугольник", lambda: rectangle(current_image, qt))
+            btn_red = qt.add_button("Красный канал", lambda: red_channel(current_image, qt))
+            btn_green = qt.add_button("Зеленый канал", lambda: green_channel(current_image, qt))
+            btn_blue = qt.add_button("Синий канал", lambda: blue_channel(current_image, qt))
+            btn_back = qt.add_button("Назад", qt.show_main_window)
+
+            for btn in [btn_crop, btn_rotate, btn_rect, btn_red, btn_green, btn_blue, btn_back]:
+                qt.operations_layout.addWidget(btn)
+
+            qt.show_operations_window()
+
     def exit_app():
         cv2.destroyAllWindows()
         qt.app.quit()
@@ -35,6 +51,7 @@ def main():
     menu_items = [
         ("Загрузить изображение", load_image),
         ("Сделать снимок с камеры", video),
+        ("Операции с изображениями", show_operations),
         ("Выход", exit_app)
     ]
 
@@ -45,4 +62,6 @@ def main():
 
 
 if __name__ == "__main__":
+    qt = QtInterface()
     main()
+    sys.exit(qt.app.exec_())
