@@ -2,12 +2,20 @@ import cv2
 
 
 class ImageDownload:
+    """Класс для загрузки изображений из файла или с камеры устройства.
+
+    Args:
+        qt_instance (QtInterface):
+         Экземпляр QtInterface для взаимодействия с GUI.
+    """
+
     def __init__(self, qt_instance):
         self.qt = qt_instance
         self.img = None
         self.cap = None
 
     def load_image(self):
+        """Загружает изображение из файла через диалоговое окно."""
         file_path, _ = self.qt.show_file_dialog()
         if file_path:
             try:
@@ -21,6 +29,7 @@ class ImageDownload:
                 self.img = None
 
     def video(self):
+        """Запускает видеозахват с камеры и позволяет сделать снимок."""
         if self.cap is not None:
             print("Камера уже запущена!")
             return
@@ -30,7 +39,8 @@ class ImageDownload:
             if not self.cap.isOpened():
                 print("Ошибка: не удалось открыть камеру")
                 return
-            button = self.qt.add_button("Сделать снимок", lambda: self.save_frame())
+            button = self.qt.add_button("Сделать снимок",
+                                        lambda: self.save_frame())
             self.qt.camera_layout.addWidget(button)
             self.qt.camera_window.show()
             while True:
@@ -52,6 +62,7 @@ class ImageDownload:
             self.qt.camera_window.hide()
 
     def save_frame(self):
+        """Сохраняет текущий кадр с камеры как изображение."""
         if self.cap is None:
             return None
         ret, frame = self.cap.read()

@@ -1,26 +1,29 @@
 import sys
-
 from ImageOperations.ImageDownload import ImageDownload
 from QT.QtMain import QtInterface
 from ImageOperations.Functions import *
 
 
 def main():
-
+    """Основная функция приложения.
+     Инициализирует интерфейс и обработчики событий."""
     img = ImageDownload(qt)
     current_image = None
 
     def load_image():
+        """Обработчик загрузки изображения из файла."""
         nonlocal current_image
         img.load_image()
         current_image = img.img
 
     def video():
+        """Обработчик запуска видеозахвата."""
         nonlocal current_image
         img.video()
         current_image = img.img
 
     def show_operations():
+        """Показывает окно операций с изображением."""
         if current_image is None:
             qt.show_error("Сначала загрузите изображение!")
             return
@@ -31,20 +34,28 @@ def main():
                 if widget is not None:
                     widget.deleteLater()
 
-            btn_crop = qt.add_button("Обрезать", lambda: crop(current_image, qt))
-            btn_rotate = qt.add_button("Повернуть", lambda: rotation(current_image, qt))
-            btn_rect = qt.add_button("Прямоугольник", lambda: rectangle(current_image, qt))
-            btn_red = qt.add_button("Красный канал", lambda: red_channel(current_image, qt))
-            btn_green = qt.add_button("Зеленый канал", lambda: green_channel(current_image, qt))
-            btn_blue = qt.add_button("Синий канал", lambda: blue_channel(current_image, qt))
+            btn_crop = qt.add_button("Обрезать",
+                                     lambda: crop(current_image, qt))
+            btn_rotate = qt.add_button("Повернуть",
+                                       lambda: rotation(current_image, qt))
+            btn_rect = qt.add_button("Прямоугольник",
+                                     lambda: rectangle(current_image, qt))
+            btn_red = qt.add_button("Красный канал",
+                                    lambda: red_channel(current_image, qt))
+            btn_green = qt.add_button("Зеленый канал",
+                                      lambda: green_channel(current_image, qt))
+            btn_blue = qt.add_button("Синий канал",
+                                     lambda: blue_channel(current_image, qt))
             btn_back = qt.add_button("Назад", qt.show_main_window)
 
-            for btn in [btn_crop, btn_rotate, btn_rect, btn_red, btn_green, btn_blue, btn_back]:
+            for btn in [btn_crop, btn_rotate, btn_rect,
+                        btn_red, btn_green, btn_blue, btn_back]:
                 qt.operations_layout.addWidget(btn)
 
             qt.show_operations_window()
 
     def exit_app():
+        """Завершает работу приложения."""
         cv2.destroyAllWindows()
         qt.app.quit()
 
