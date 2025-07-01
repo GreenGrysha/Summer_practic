@@ -36,8 +36,11 @@ class QtInterface:
     def setup_windows(self):
         """Инициализирует окна и их макеты."""
         self.main_layout = QVBoxLayout(self.main_window)
+        self.main_window.setWindowTitle("Редактор изображений")
         self.operations_layout = QVBoxLayout(self.operations_window)
+        self.operations_window.setWindowTitle("Доступные операции")
         self.camera_layout = QVBoxLayout(self.camera_window)
+        self.camera_window.setWindowTitle("Фото")
         label = QLabel("(ESC для выхода)")
         self.camera_layout.addWidget(label)
 
